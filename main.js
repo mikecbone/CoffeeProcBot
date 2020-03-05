@@ -1,6 +1,5 @@
-import { Client } from 'discord.js';
-import { remove, transports, add, level, info } from 'winston';
-import { token } from './auth.json';
+const Discord = require('discord.js');
+const token = require('./auth.json');
 
 // Coffee order vars
 let countdownIntervalFunction = null;
@@ -25,20 +24,15 @@ let coffeeMessageStrings = [
     "Caffination time?"
 ];
 
-// Configure logger settings
-remove(transports.Console);
-add(new transports.Console, {
-    colorize: true
-});
-level = 'debug';
-
 // Initialize Discord Bot
-let bot = new Client();
+const bot = new Discord.Client();
 
 bot.on('ready', function (evt) {
-    info('Connected');
-    info(`Logged in as: ${bot.user.tag}`);
+    console.log('Connected');
+    console.log(`Logged in as: ${bot.user.tag}`);
 });
+
+// On discord message
 bot.on('message', message => {
     // Exit if earlier message is being processed
     if (incomingDiscordMessage !== null) {
@@ -61,7 +55,7 @@ bot.on('message', message => {
     }
 });
 
-bot.login(token);
+bot.login(token.token);
 
 // Functions
 function processCoffeeCommand() {
