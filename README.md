@@ -21,3 +21,7 @@ This discord bot has the following commands:
 - `!help` to display a list of available commands
 - `!coffee` to start a coffee order with a 30 minute countdown and 2 reminders
 - `!quickcoffee` to start a coffee order with a 5 minute countdown and 0 reminders
+
+## Hosting
+
+The bot can be hosted on a raspberry pi using [PM2](https://pm2.keymetrics.io/). PM2 is a daemon process manager for node.js which makes the hosting process simple and easy.
