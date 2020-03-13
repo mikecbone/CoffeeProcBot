@@ -23,6 +23,16 @@ let coffeeMessageStrings = [
     "Ska vi fika?",
     "Caffination time?"
 ];
+let magicCodeBallStrings = [
+    "You should Google it.",
+    "Error 404: Not Found.",
+    "It's a feature, not a bug.",
+    "Try asking a rubber duck.",
+    "It works on my machine!",
+    "Sudo it!",
+    "Syntax error.",
+    "Have you tried turning it off and on again?"
+];
 
 // Initialize Discord Bot
 const bot = new Discord.Client();
@@ -34,11 +44,20 @@ bot.on('ready', function (evt) {
 
 // On discord message
 bot.on('message', message => {
-    // Exit if earlier message is being processed
-    if (incomingDiscordMessage !== null) {
+    // Respond to all magic code ball and help messages
+    if (message.content.startsWith("!mcb") && message.channel.name === 'magiccodeball') {
+        processMcbCommand(message);
+    }
+    else if (message.content === "!help" && message.channel.name === 'coffee') {
+        message.channel.send('Type !coffee for a 30 minute order or !quickcoffee for a 5 minute order!');
+    }
+    // Exit if earlier coffee message is being processed
+    else if (incomingDiscordMessage !== null) {
         return;
     }
-    else if (message.content === "!coffee" && message.channel.name === 'coffee') {
+
+    // Otherwise coffee check for coffee message
+    if (message.content === "!coffee" && message.channel.name === 'coffee') {
         incomingDiscordMessage = message;
         countdownTimeMinutes = 30;
         countdownTimeNotifyMinutes = 10;
@@ -50,9 +69,6 @@ bot.on('message', message => {
         countdownTimeNotifyMinutes = 5;
         processCoffeeCommand()
     }
-    else if (message.content === "!help" && message.channel.name === 'coffee') {
-        message.channel.send('Type !coffee for a 30 minute order or !quickcoffee for a 5 minute order!');
-    }
 });
 
 bot.login(token.token);
@@ -62,6 +78,11 @@ function processCoffeeCommand() {
     countdownReactionMilliseconds = minutesToMilliseconds(countdownTimeMinutes) - 2000;
     sendCoffeeMessage();
     countdownIntervalFunction = setInterval(countdownToOrder, minutesToMilliseconds(countdownTimeNotifyMinutes));
+}
+
+function processMcbCommand(message) {
+    const mcbMessage = magicCodeBallStrings[Math.floor(Math.random()*magicCodeBallStrings.length)];
+    message.channel.send(`${mcbMessage}`);
 }
 
 async function sendCoffeeMessage() {
