@@ -93,6 +93,11 @@ bot.on('message', message => {
         console.log(`!schedscrum`);
         processScrumCommand(message);
     }
+    // Setup scrum scedular
+    else if (message.content.startsWith("!clearscrum")) {
+        console.log(`!clearscrum`);
+        processClearScrumCommand(message);
+    }
 });
 
 bot.login(token.token);
@@ -150,7 +155,7 @@ function minutesToMilliseconds(minutes) {
 function processScrumCommand(message) {
     clearTimeout(scrumTimeoutFunction);
     message.channel.send(scrumMessage());
-    scrumTimeoutFunction = setTimeout(processScrumCommand, 86400000, message);
+    scrumTimeoutFunction = setTimeout(processScrumCommand, 3000, message);
 }
 
 function scrumMessage() {
@@ -167,6 +172,17 @@ function scrumMessage() {
     }
 
     return `**Scrum ${dd}/${mm}/${yyyy}**`;
+}
+
+function processClearScrumCommand(message) {
+    if (scrumTimeoutFunction) {
+        clearTimeout(scrumTimeoutFunction);
+        scrumTimeoutFunction = null;
+        message.channel.send('Scrum schedule cleared');
+    } 
+    else {
+        message.channel.send('No active scrum schedule found');
+    }
 }
 
 function processTimerCommand(message, mins) {
