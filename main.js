@@ -51,11 +51,12 @@ bot.on('message', message => {
         console.log(`!help`);
         message.channel.send(`
             Available commands:
-            - "!coffee" for a 30 minute order in a "Coffee" channel
-            - "!quickcoffee" for a 5 minute order in a "Coffee" channel
-            - "!timer 4" for a 4 minute timer countdown
-            - "!schedscrum" to setup a daily scrum reminder in the channel
-            - "!mcb" for a magic code ball response in a "MagicCodeBall" channel
+            - "!coffee" for a 30 minute order in a "Coffee" channel.
+            - "!quickcoffee" for a 5 minute order in a "Coffee" channel.
+            - "!timer X" for an X minute timer countdown.
+            - "!schedscrum" to setup a daily scrum reminder, in the current channel, at the time of the command.
+            - "!clearscrum" to clear the daily scrum reminder.
+            - "!mcb" for a magic code ball response in a "MagicCodeBall" channel.
         `);
     }
     // Coffee order
