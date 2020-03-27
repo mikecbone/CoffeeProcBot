@@ -3,6 +3,8 @@ const token = require('./auth.json');
 
 // Coffee order vars
 let countdownIntervalFunction = null;
+let scrumTimeoutFunction = null;
+let timerTimeoutFunction = null;
 let countdownTimeMinutes = null;
 let countdownTimeNotifyMinutes = null;
 let countdownReactionMilliseconds = null;
@@ -44,30 +46,52 @@ bot.on('ready', function (evt) {
 
 // On discord message
 bot.on('message', message => {
-    // Respond to all magic code ball and help messages
-    if (message.content.startsWith("!mcb") && message.channel.name === 'magiccodeball') {
-        processMcbCommand(message);
+    // Help message
+    if (message.content === "!help") {
+        console.log(`!help`);
+        message.channel.send(`
+            Available commands:
+            - "!coffee" for a 30 minute order in a "Coffee" channel
+            - "!quickcoffee" for a 5 minute order in a "Coffee" channel
+            - "!timer 4" for a 4 minute timer countdown
+            - "!schedscrum" to setup a daily scrum reminder in the channel
+            - "!mcb" for a magic code ball response in a "MagicCodeBall" channel
+        `);
     }
-    else if (message.content === "!help" && message.channel.name === 'coffee') {
-        message.channel.send('Type !coffee for a 30 minute order or !quickcoffee for a 5 minute order!');
-    }
-    // Exit if earlier coffee message is being processed
-    else if (incomingDiscordMessage !== null) {
-        return;
-    }
-
-    // Otherwise coffee check for coffee message
-    if (message.content === "!coffee" && message.channel.name === 'coffee') {
+    // Coffee order
+    else if (message.content === "!coffee" && message.channel.name === 'coffee' && incomingDiscordMessage == null) {
+        console.log(`!coffee`);
         incomingDiscordMessage = message;
         countdownTimeMinutes = 30;
         countdownTimeNotifyMinutes = 10;
         processCoffeeCommand();
     }
-    else if (message.content === "!quickcoffee" && message.channel.name === 'coffee') {
+    // Quick coffee order
+    else if (message.content === "!quickcoffee" && message.channel.name === 'coffee' && incomingDiscordMessage == null) {
+        console.log(`!quickcoffee`);
         incomingDiscordMessage = message;
         countdownTimeMinutes = 5;
         countdownTimeNotifyMinutes = 5;
         processCoffeeCommand()
+    }
+    // Magic code ball response
+    else if (message.content.startsWith("!mcb") && message.channel.name === 'magiccodeball') {
+        console.log(`!mcb`);
+        processMcbCommand(message);
+    }
+    // Setup countdown timer
+    else if (message.content.startsWith("!timer")) {
+        console.log(`!timer`);
+        const mins = parseInt(message.content.substring(7));
+        if (isNaN(mins)) { 
+            return; 
+        }
+        processTimerCommand(message, mins);
+    }
+    // Setup scrum scedular
+    else if (message.content.startsWith("!schedscrum")) {
+        console.log(`!schedscrum`);
+        processScrumCommand(message);
     }
 });
 
@@ -121,4 +145,35 @@ function countdownToOrder() {
 
 function minutesToMilliseconds(minutes) {
     return (minutes * 60 * 1000);
+}
+
+function processScrumCommand(message) {
+    clearTimeout(scrumTimeoutFunction);
+    message.channel.send(scrumMessage());
+    scrumTimeoutFunction = setTimeout(processScrumCommand, 86400000, message);
+}
+
+function scrumMessage() {
+    const date = new Date();
+    let dd = date.getDay();
+    let mm = date.getMonth() + 1;
+    const yyyy = date.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+
+    return `**Scrum ${dd}/${mm}/${yyyy}**`;
+}
+
+function processTimerCommand(message, mins) {
+    clearTimeout(timerTimeoutFunction);
+    message.channel.send(`Timer set for ${mins} minutes`);
+    const milliseconds = minutesToMilliseconds(mins);
+    timerTimeoutFunction = setTimeout(() => {
+        message.channel.send('Timer finished!');
+    }, milliseconds);
 }
