@@ -33,7 +33,10 @@ let magicCodeBallStrings = [
     "It works on my machine!",
     "Sudo it!",
     "Syntax error.",
-    "Have you tried turning it off and on again?"
+    "Have you tried turning it off and on again?",
+    "Check stack overflow!",
+    "It's the newest team members fault.",
+    "Maybe leave this alone, you'll only make it worse.."
 ];
 
 // Initialize Discord Bot
@@ -156,7 +159,7 @@ function minutesToMilliseconds(minutes) {
 function processScrumCommand(message) {
     clearTimeout(scrumTimeoutFunction);
     message.channel.send(scrumMessage());
-    scrumTimeoutFunction = setTimeout(processScrumCommand, 3000, message);
+    scrumTimeoutFunction = setTimeout(processScrumCommand, 86400000, message);
 }
 
 function scrumMessage() {
