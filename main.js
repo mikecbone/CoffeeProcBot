@@ -164,7 +164,7 @@ function processScrumCommand(message) {
 
 function scrumMessage() {
     const date = new Date();
-    let dd = date.getDay();
+    let dd = date.getDate();
     let mm = date.getMonth() + 1;
     const yyyy = date.getFullYear();
 
